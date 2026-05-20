@@ -1,28 +1,49 @@
 # S3JU v1.0
 
-**Advanced Security Testing Framework**
-
+**Advanced Security Testing Framework**  
 Developed by **D4RK-K1NG**
 
 ---
 
 ## Overview
 
-S3JU is a Telegram-controlled security testing framework designed for **authorized penetration testing and security awareness assessments**.
-
-It helps security professionals simulate web-based attack scenarios, manage test sessions, collect telemetry, and evaluate defensive readiness in controlled environments.
-
-> **Important:** This tool is intended strictly for authorized security testing and educational purposes only.
+S3JU is a Telegram-controlled security testing framework for authorized penetration testing and security assessment.
 
 ---
 
 ## Features
 
-### Telegram Bot Control
-Manage and monitor testing sessions directly through Telegram.
+- Telegram Bot Control
+- Multi-Platform Web Simulation
+- Camera / GPS / Microphone Modules
+- SQLite Database
+- Admin Panel
+- Session Management
 
-### Multi-Platform Web Simulation
-Supports realistic simulation templates for major platforms:
+---
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/start` | Start the bot |
+| `/attack` | Create new session |
+| `/stats` | View statistics |
+| `/cancel` | Cancel active sessions |
+| `/help` | Show help |
+| `/admin` | Admin panel |
+| `/broadcast` | Broadcast message |
+
+---
+
+## Project Structure
+
+```bash
+s3ju/
+├── app.py
+├── requirements.txt
+├── Procfile
+└── templates/Supports realistic simulation templates for major platforms:
 
 - Instagram
 - Facebook
